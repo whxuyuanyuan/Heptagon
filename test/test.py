@@ -24,15 +24,20 @@ def heptagon_plot(I2, I1, A0, r0):
              color='black')
 
 
-imgWh = misc.imread('IMG_0000.JPG')
-imgUv = misc.imread('IMG_0001.JPG')
+imgUv = misc.imread('pictures/IMG_0016.JPG')
+imgWh = misc.imread('pictures/IMG_0017.JPG')
+imgPl = misc.imread('pictures/IMG_0018.JPG')
 
-imgWh = imgWh[1280: 1823, 2450: 3200]
-imgUv = imgUv[1280: 1823, 2450: 3200]
+
+imgWh = imgWh[554: 1366, 1452: 2066]
+imgUv = imgUv[554: 1366, 1452: 2066]
+imgPl = imgPl[554: 1366, 1452: 2066]
 
 # Extract the red and blue parts respectively
-imgWh = imgWh[:, :, 0]
+#imgWh = imgWh[:, :, 0]
 imgUv = imgUv[:, :, 2]
+
+
 
 thUv = -15
 
@@ -44,36 +49,51 @@ imgUvBin = cv2.adaptiveThreshold(imgUvBin, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
 imgUvLabel = nd.measurements.label(imgUvBin)[0]
 
 centers = nd.measurements.center_of_mass(imgUvBin, imgUvLabel, range(1, int(np.amax(imgUvLabel) + 1)))
-#areas = nd.measurements.sum(imgUvBin, imgUvLabel, range(1, int(np.amax(imgUvLabel) + 1)))
+areas = nd.measurements.sum(imgUvBin, imgUvLabel, range(1, int(np.amax(imgUvLabel) + 1)))
 
-plt.imshow(imgWh)
+print areas
+
+centers_temp = []
+
+for i in range(len(centers)):
+    if areas[i] > 100000:
+        centers_temp.append(centers[i])
+centers = centers_temp
+plt.imshow(imgUvBin)
 
 for i in range(len(centers)):
     plt.scatter(centers[i][1], centers[i][0])
+plt.show()
+
+
+
+plt.imshow(imgWh)
+
 
 # Hough Circle Transform
 circles = cv2.HoughCircles(imgUv, cv.CV_HOUGH_GRADIENT, 1, 20,
-                           param1=50, param2=30, minRadius=0, maxRadius=0)
-circles = np.uint16(np.around(circles))
+                           param1=50, param2=25, minRadius=0, maxRadius=0)
 
 x = []
 y = []
 orien = []
 
 for i in circles[0, :]:
-    plt.scatter(i[0], i[1], color='r')
-    x.append(i[0])
-    y.append(i[1])
-    minVal = 10000
-    index_temp = 1
-    for j in range(len(centers)):
-        dist2 = (centers[j][1] - x[-1]) ** 2 + (centers[j][0] - y[-1]) ** 2
-        if 10 < dist2 < minVal:
-            minVal = dist2
-            index_temp = j
-    orien.append(np.arctan2((centers[index_temp][0] - y[-1]), centers[index_temp][1] - x[-1]))
-    # plot
-    plt.plot([centers[index_temp][1], x[-1]], [centers[index_temp][0], y[-1]])
-    heptagon_plot(x[-1], y[-1], orien[-1], 70)
+    if 10 < i[2] < 20:
+        plt.scatter(i[0], i[1], color='r')
+        x.append(i[0])
+        y.append(i[1])
+        minVal = 10000
+        index_temp = 1
+        for j in range(len(centers)):
+            dist2 = (centers[j][1] - x[-1]) ** 2 + (centers[j][0] - y[-1]) ** 2
+            if 1000 < dist2 < minVal:
+                minVal = dist2
+                index_temp = j
+        orien.append(np.arctan2((centers[index_temp][0] - y[-1]), centers[index_temp][1] - x[-1]))
+        # plot
+        plt.plot([centers[index_temp][1], x[-1]], [centers[index_temp][0], y[-1]])
+        heptagon_plot(x[-1], y[-1], orien[-1], 70)
+
 
 plt.show()
