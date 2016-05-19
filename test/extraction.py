@@ -70,11 +70,11 @@ def resize(it):
 
 # set parameters
 print('Enter first index:')
-firstIndex = raw_input()
+firstIndex = int(raw_input())
 print('Enter last index:')
-lastIndex = raw_input()
+lastIndex = int(raw_input())
 print('Enter number of parallel processing:')
-Npara = raw_input()
+Npara = int(raw_input())
 
 # rename pictures
 for i in range(0, (lastIndex - firstIndex)/3 + 1):
@@ -98,7 +98,7 @@ I2M = int(p2[0])
 
 # resize of the pictures:
 p = Pool(8)
-p.map(resize, range(0, (lastIndex - firstIndex) / 3 + 1))
+p.map(resize, range(0, (lastIndex - firstIndex) / 3 + 2))
 
 # make movies
 os.system('mkdir movies')
@@ -116,14 +116,19 @@ _, q1, q2, q3, q4, q5, q6, q7 = ginput(0, 0)
 plt.show()
 plt.close()
 
-r0 = int((0.5 / m.sin(m.pi / 7)) * np.mean(np.array(
+r0 = (0.5 / m.sin(m.pi / 7)) * np.mean(np.array(
     [m.sqrt((q1[0] - q2[0]) ** 2 + (q1[1] - q2[1]) ** 2), m.sqrt((q2[0] - q3[0]) ** 2 + (q2[1] - q3[1]) ** 2),
      m.sqrt((q3[0] - q4[0]) ** 2 + (q3[1] - q4[1]) ** 2), m.sqrt((q4[0] - q5[0]) ** 2 + (q4[1] - q5[1]) ** 2),
      m.sqrt((q5[0] - q6[0]) ** 2 + (q5[1] - q6[1]) ** 2), m.sqrt((q6[0] - q7[0]) ** 2 + (q6[1] - q7[1]) ** 2),
-     m.sqrt((q7[0] - q1[0]) ** 2 + (q7[1] - q1[1]) ** 2)])))
+     m.sqrt((q7[0] - q1[0]) ** 2 + (q7[1] - q1[1]) ** 2)]))
 
 # construct heptagon matrix
 MatHept = constructMat(r0)
+
+# make the pattern of edges:
+MatHeptEdge = cv2.Canny(1 - MatHept.astype('uint8'), 0, 1)
+kernel = np.ones((int(MatHeptEdge.shape[0] * 0.008) * 2 + 1, int(MatHeptEdge.shape[0] * 0.008) * 2 + 1), np.uint8)
+MatPentEdge = cv2.dilate(MatHeptEdge, kernel, iterations=1)
 
 # construct a smaller heptagon matrix
 r1 = 0.97 * r0
@@ -140,15 +145,16 @@ os.system('mkdir movies/tmpPositionContact')
 os.system('mkdir ParticleData')
 
 # save global variables
-np.save('tmp/r0.npy', r0);
-np.save('tmp/r1.npy', r1);
+np.save('tmp/r0.npy', r0)
+np.save('tmp/r1.npy', r1)
 np.save('tmp/r2.npy', r2)
 np.save('tmp/MatHept.npy', MatHept)
+np.save('tmp/MatPentEdge.npy', MatPentEdge)
 np.save('tmp/MatHeptS.npy', MatHeptS)
 np.save('tmp/MatHeptL.npy', MatHeptL)
 
 # segmentation vector:
-Segment = np.linspace(1, (lastIndex - firstIndex) / 3 + 2, Npara + 1).astype(int)
+Segment = np.linspace(0, (lastIndex - firstIndex) / 3 + 1, Npara + 1).astype(int)
 
 # segmentation loop:
 for itCp in range(1, Npara + 1):
@@ -163,7 +169,7 @@ for itCp in range(1, Npara + 1):
     else:
         np.save('Compute_' + '%02d' % itCp + '/stop.npy', Segment[itCp])
     # Transfer main code:
-    os.system('cp Main.py Compute_' + '%02d' % itCp + '/Main.py')
+    os.system('cp position.py Compute_' + '%02d' % itCp + '/position.py')
 
 print 'Run each code'
 

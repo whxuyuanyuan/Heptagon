@@ -11,13 +11,15 @@ import cv2
 import os
 from multiprocessing import Pool
 
-lost = []
+lost = [68, 89]
+count = 1
 for i in range(1, 304):
     if lost.__contains__(i):
         i += 1
         continue
     if i % 3 == 0:
-        os.system('mv pictures/IMG_' + '%04d' % i + '.JPG pictures/' + '%04d' % (i/3) + '_Pl.jpg')
+        os.system('mv pictures/IMG_' + '%04d' % count + '.JPG pictures/' + '%04d' % (i/3) + '_Pl.jpg')
+    count += 1
 
 # select extremum points
 imgWh = misc.imread('pictures/0001_Pl.jpg');

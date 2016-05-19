@@ -25,7 +25,7 @@ def heptagon_plot(I2, I1, A0, r0):
 
 
 imgUv = misc.imread('uv.JPG')
-imgWh = misc.imread('Wh.JPG')
+imgWh = misc.imread('0000_Wh.JPG')
 
 plt.imshow(imgWh)
 
@@ -33,7 +33,7 @@ x = []
 y = []
 orien = []
 
-f = open('centers.txt', 'r')
+f = open('step_0000', 'r')
 for line in f:
     data = [float(elem) for elem in line.split()]
     x.append(data[0])
@@ -42,4 +42,4 @@ for line in f:
     heptagon_plot(x[-1], y[-1], orien[-1], 70)
 
 
-plt.savefig('test.pdf', dpi=400)
+plt.show()
