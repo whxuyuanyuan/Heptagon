@@ -24,14 +24,18 @@ def heptagon_plot(I1, I2, A0, r0):
              color='black')
 
 r0 = np.load('tmp/r0.npy')
-for step in range(0, 10):
-    imgWh = misc.imread('pictures/%4d_Wh.jpg' % step)
+print('Enter first index:')
+firstIndex = int(raw_input())
+print('Enter last index:')
+lastIndex = int(raw_input())
+for step in range(firstIndex, lastIndex):
+    imgWh = misc.imread('pictures/%04d_Wh.jpg' % step)
 
     cen_x = []
     cen_y = []
     orien = []
 
-    f = open('ParticleData/data_%4d' % step, 'r')
+    f = open('ParticleData/data_%04d' % step, 'r')
     for line in f:
         data = [float(elem) for elem in line.split()]
         cen_x.append(data[0])
@@ -40,5 +44,5 @@ for step in range(0, 10):
     plt.imshow(imgWh)
     for i in range(len(cen_x)):
         heptagon_plot(cen_x[i], cen_y[i], orien[i], r0)
-    plt.savefig('movies/tmpPositionOnImage/postion_%4d.eps' % step, dpi=400)
+    plt.savefig('movies/tmpPositionOnImage/postion_%04d.eps' % step, dpi=400)
     plt.close()
