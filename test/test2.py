@@ -42,4 +42,4 @@ for line in f:
     heptagon_plot(x[-1], y[-1], orien[-1], 70)
 
 
-plt.savefig('test_254.pdf', dpi=400)
+plt.savefig('test.pdf', dpi=400)
