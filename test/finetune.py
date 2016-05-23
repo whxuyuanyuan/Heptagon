@@ -81,9 +81,9 @@ def OverlapVal(x):
             # compute overlap value
 
             val1 = (np.sum(MatHeptRot * subMap1[
-                                       subMap1.shape[0] / 2 + dx - MatHeptRot.shape[0] / 2:subMap.shape[0] / 2 + dx +
+                                       subMap1.shape[0] / 2 + dx - MatHeptRot.shape[0] / 2:subMap1.shape[0] / 2 + dx +
                                                                                           MatHeptRot.shape[0] / 2,
-                                       subMap1.shape[1] / 2 + dy - MatHeptRot.shape[1] / 2:subMap.shape[1] / 2 + dy +
+                                       subMap1.shape[1] / 2 + dy - MatHeptRot.shape[1] / 2:subMap1.shape[1] / 2 + dy +
                                                                                           MatHeptRot.shape[
                                                                                                1] / 2]) / np.sum(
                 MatHeptRot))

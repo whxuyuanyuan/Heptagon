@@ -103,27 +103,27 @@ def OverlapVal(x):
 # load params
 r0 = np.load('tmp/r0.npy')
 MatHept = np.load('tmp/MatHept.npy')
-MatPentEdge = np.load('tmp/MatPentEdge.npy')
+MatHeptEdge = np.load('tmp/MatHeptEdge.npy')
 begin=np.load('begin.npy')
 stop=np.load('stop.npy')
 
 for step in range(begin, stop + 1):
     print step
-    imgUv = misc.imread('%04d_Uv.jpg' % step)
-    imgWh = misc.imread('%04d_Wh.jpg' % step)
+    imgUv = misc.imread('../pictures/%04d_Uv.jpg' % step)
+    imgWh = misc.imread('../pictures/%04d_Wh.jpg' % step)
     imgWh = imgWh[:, :, 0]  # extract red part
 
     cen_x = []
     cen_y = []
     orien = []
 
-    f = open('rough_position/step_%04d' % step, 'r')
+    f = open('../rough_position/step_%04d' % step, 'r')
     for line in f:
         data = [float(elem) for elem in line.split()]
         cen_y.append(data[0])
         cen_x.append(data[1])
         orien.append(data[2])
-
+    print len(cen_x)
     for i in range(len(cen_x)):
         x1 = cen_x[i]
         y1 = cen_y[i]
@@ -140,7 +140,6 @@ for step in range(begin, stop + 1):
         guess = [0.0, 0.0, 0.0]
         optim = optimize.minimize(OverlapVal, guess, method='Powell',
                                   options={'disp': False, 'maxfev': 150, 'ftol': 10 ** (-5), 'xtol': 10 ** (-5)})
-        print optim.fun
         cen_x[i] += optim.x[0]
         cen_y[i] += optim.x[1]
         orien[i] += optim.x[2]
